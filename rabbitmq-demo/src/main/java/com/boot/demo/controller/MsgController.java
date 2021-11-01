@@ -17,11 +17,31 @@ public class MsgController {
     Producer producer;
     @GetMapping("/testDeadLetter")
     public void testDeadLetter(String msg){
-        producer.sendDeadLetterMsg(msg);
+        producer.sendBusinessMsg(msg);
     }
 
     @GetMapping("/send")
     public void sendMsg(){
         producer.sendMsg();
+    }
+
+    /**
+     * 队列设置延时
+     */
+    @GetMapping("/testDelayDeadLetter")
+    public void testDelayDeadLetter(String msg){
+        producer.sendDelayMsg(msg);
+    }
+    /**
+     * 消息设置延时
+     */
+    @GetMapping("/testDelayDeadLetter2")
+    public void testDelayDeadLetter(String msg,String delayTime){
+        producer.sendDelayMsg2(msg,delayTime);
+    }
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello";
     }
 }

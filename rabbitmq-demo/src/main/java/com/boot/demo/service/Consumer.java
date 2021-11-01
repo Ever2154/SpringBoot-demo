@@ -4,6 +4,7 @@ import com.boot.demo.config.RabbitmqConfig;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.impl.AMQImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
@@ -17,6 +18,7 @@ import java.io.IOException;
  * date 2021-10-26
  */
 @Service
+@Slf4j
 public class Consumer {
     @RabbitListener(queues = {RabbitmqConfig.DEMO_QUEUE})
     public void receiveMsg(Message msg, Channel channel) throws IOException {
@@ -59,6 +61,16 @@ public class Consumer {
     @RabbitListener(queues = {RabbitmqConfig.DEAD_LETTER_QUEUE})
     public void receiveDeadLetterMsg(Message msg, Channel channel) throws IOException {
         System.out.println("死信消息:"+new String(msg.getBody()));
+        channel.basicAck(msg.getMessageProperties().getDeliveryTag(),false);
+    }
+
+
+    /**
+     * 监听延时死信消息队列
+     */
+    @RabbitListener(queues = {RabbitmqConfig.DELAY_DEAD_LETTER_QUEUE})
+    public void receiveDelayDeadLetterMsg(Message msg, Channel channel) throws IOException {
+        log.info("收到死信消息...{}",new String(msg.getBody()));
         channel.basicAck(msg.getMessageProperties().getDeliveryTag(),false);
     }
 }
