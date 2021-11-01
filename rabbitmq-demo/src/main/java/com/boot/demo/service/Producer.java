@@ -46,4 +46,13 @@ public class Producer {
         amqpTemplate.convertAndSend(RabbitmqConfig.DELAY_EXCHANGE,RabbitmqConfig.DELAY_EXCHANGE_QUEUE_BINDING_KEY2,message);
 
     }
+
+    public void sendDelayPluginMsg(String msg,String delayTime){
+        //向延时交换器发送消息
+        amqpTemplate.convertAndSend(RabbitmqConfig.DELAY_PLUGIN__EXCHANGE,RabbitmqConfig.DELAY_PLUGIN__EXCHANGE_QUEUE_BINDING_KEY,msg,
+                message->{
+                    message.getMessageProperties().setDelay(Integer.valueOf(delayTime));
+                    return message;
+        });
+    }
 }

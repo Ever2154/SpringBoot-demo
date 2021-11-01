@@ -73,4 +73,13 @@ public class Consumer {
         log.info("收到死信消息...{}",new String(msg.getBody()));
         channel.basicAck(msg.getMessageProperties().getDeliveryTag(),false);
     }
+
+    /**
+     * 监听使用delay插件的消息队列
+     */
+    @RabbitListener(queues = {RabbitmqConfig.DELAY_PLUGIN_QUEUE})
+    public void receiveDelayPluginMsg(Message msg, Channel channel) throws IOException {
+        log.info("收到延时消息...{}",new String(msg.getBody()));
+        channel.basicAck(msg.getMessageProperties().getDeliveryTag(),false);
+    }
 }

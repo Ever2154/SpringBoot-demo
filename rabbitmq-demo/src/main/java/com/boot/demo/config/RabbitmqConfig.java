@@ -46,6 +46,27 @@ public class RabbitmqConfig {
     public final static String DELAY_DEAD_LETTER_EXCHANGE = "delay-dead-letter-exchange";
     public final static String DELAY_DEAD_LETTER_QUEUE = "delay-dead-letter-queue";
     public final static String DELAY_DEAD_LETTER_ROUTING_KEY = "delay.dead.#";
+
+
+    public final static String DELAY_PLUGIN_QUEUE = "delay-plugin-queue";
+    public final static String DELAY_PLUGIN__EXCHANGE = "delay-plugin-exchange";
+    public final static String DELAY_PLUGIN__EXCHANGE_QUEUE_BINDING_KEY = "delay.plugin.demo";
+
+    //---------------------------------------延时队列demo(使用插件解决 原先消息在快要消费时才会判断是否过期)
+    @Bean
+    public CustomExchange delayPluginExchange() {
+        Map<String,Object> args=new HashMap<>(16);
+        args.put("x-delayed-type", "direct");
+        return new CustomExchange(DELAY_PLUGIN__EXCHANGE,"x-delayed-message",true,false,args);
+    }
+    @Bean
+    public Queue delayPluginQueue() {
+        return new Queue(DELAY_PLUGIN_QUEUE);
+    }
+    @Bean
+    public Binding delayPluginQueueBinding(Queue delayPluginQueue,CustomExchange delayPluginExchange) {
+        return BindingBuilder.bind(delayPluginQueue).to(delayPluginExchange).with(DELAY_PLUGIN__EXCHANGE_QUEUE_BINDING_KEY).noargs();
+    }
     //---------------------------------------延时队列demo(设置发送消息过期时间)
 
     /**
